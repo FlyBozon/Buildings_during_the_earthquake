@@ -102,8 +102,8 @@ Run the script with:
 This will open the GUI, displaying the building model.
 
 ### Sorurces of knowladges: 
-automatics lectures materials from 3 semester
-https://youtu.be/vLaFAKnaRJU?si=gtMJmBpE3IR9V5J_
-full cource https://youtube.com/playlist?list=PL48SKuieCUq81ONOaHIaWiQB8Tu7W0N0D&si=0tOTYJsylFfVchBs 
-wikipedia
-AI: ChatGPT, CloudAI
+- automatics lectures materials from 3 semester
+- https://youtu.be/vLaFAKnaRJU?si=gtMJmBpE3IR9V5J_
+- full cource https://youtube.com/playlist?list=PL48SKuieCUq81ONOaHIaWiQB8Tu7W0N0D&si=0tOTYJsylFfVchBs 
+- wikipedia
+- AI: ChatGPT, CloudAI
