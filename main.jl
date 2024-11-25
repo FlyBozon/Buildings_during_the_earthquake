@@ -1,5 +1,5 @@
 # This solution was created with the help of ChatGPT and CloudIO AI. 
-# The "Model Stanowy" (State Model) was designed by me and is included in the code. 
+# The State Model was designed by me and is included in the code. 
 # Initially, the GIF generation was implemented in one library but later refactored for better interactivity and real-time animation capabilities. 
 # The solution also utilizes resources from Stack Overflow, Julia documentation, and the JuliaLang Discourse forum.
 
