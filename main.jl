@@ -31,74 +31,46 @@ max_a =Observable(DEFAULT_MAX_AMPLITUDE)
 w_freq= Observable(DEFAULT_WAVE_FREQUENCY)
 eqke_dur = Observable(DEFAULT_EARTHQUAKE_DURATION)
 
-
-# #create a matrix from characteristic vector
-# #input - vector of characteristic; output - matrix of that characteristic
-# #same for damping and k, look at model stanowy, I will add it smth
-# #vestor input: [b1, b2, b3]
-# #simple scheme for 3floors: [-b1-b2  b2    0 ]
-# #                           [b2    -b2-b3  b3]
-# #                           [0       b3   -b3]
-# function gen_char_matr(characteristic::Vector)
-#     n = length(characteristic)
-# # the length of vector is at the same time the size of the matrix (nxn)
-#     char_matrix = zeros(Float64, n, n)  # Initialize an n x n matrix with zeros - line from chatGPT
-#     for i in 1:n
-#         for j in 1:n
-#             if i == j
-#                 # diagonal
-#                 char_matrix[i, j] = -characteristic[i] - (i < n ? characteristic[i + 1] : 0)
-#             elseif i == j - 1
-#                 #upper diagonal
-#                 char_matrix[i, j] = characteristic[i + 1]
-#             elseif i == j + 1
-#                 #lower diagonal
-#                 char_matrix[i, j] = characteristic[i]
-#             end
-#         end
-#     end
-#     return char_matrix
-# end
-
-# #create a matrix from mass vector
-# #was thinking about putting it in the characteristics matrix, 
-# #but decided to make another function if later decide to create 
-# #some additional functionalities, and then can change that function nuch nore
-# #mass matrix: [m1 0   0]
-# #             [0  m2  0]
-# #             [0  0  m3]
-# #thinking about live it like vector and work on vectors 
-# #for optimalization, as that is a diagonal matrix
-# function gen_mass_matr(mass::Vector)
-#     return Diagonal(mass)
-# end
-
-#were two different functions, now connected together
+#create a matrix from characteristic vector
+#input - vector of characteristic; output - matrix of that characteristic
+#same for damping and k, look at model stanowy, I will add it somewhere
+#vector input: [b1, b2, b3]
+#simple scheme for 3floors: [-b1-b2  b2    0 ]
+#                           [b2    -b2-b3  b3]
+#                           [0       b3   -b3]
 function gen_char_matr(characteristic::Vector)
     n = length(characteristic)
-    char_matrix = zeros(Float64, n, n)
+# the length of vector is at the same time the size of the matrix (nxn)
+    char_matrix = zeros(Float64, n, n)  # Initialize an n x n matrix with zeros - line from chatGPT
     for i in 1:n
         for j in 1:n
             if i == j
-                #Diagonal
-                char_matrix[i, j]= -characteristic[i] - (i < n ? characteristic[i + 1] : 0)
+                # diagonal
+                char_matrix[i, j] = -characteristic[i] - (i < n ? characteristic[i + 1] : 0)
             elseif i == j - 1
                 #upper diagonal
                 char_matrix[i, j] = characteristic[i + 1]
             elseif i == j + 1
                 #lower diagonal
-                char_matrix[i, j]= characteristic[i]
+                char_matrix[i, j] = characteristic[i]
             end
         end
     end
     return char_matrix
 end
 
-# Create mass matrix
+#create a matrix from mass vector
+#was thinking about putting it in the characteristics matrix, 
+#but decided to make another function if later decide to create 
+#some additional functionalities, and then can change that function nuch nore
+#mass matrix: [m1 0   0]
+#             [0  m2  0]
+#             [0  0  m3]
+#thinking about leave it like vector and work on vectors 
+#for optimalization, as that is a diagonal matrix
 function gen_mass_matr(mass::Vector)
     return Diagonal(mass)
 end
-
 
 function create_matrices(floors, stiffness, mass)
     # Mass matrix
@@ -117,7 +89,7 @@ function create_matrices(floors, stiffness, mass)
 end
 
 #equation of motion M * x'' + C * x' + K * x = F(t)
-function dynamic_response(M, K, C, external_force_func, tspan)
+function dyn_rest(M, K, C, ext_force, tspan)
     # State-space representation
     num_dofs = size(M, 1)
     A = [zeros(num_dofs, num_dofs) I;
@@ -126,7 +98,7 @@ function dynamic_response(M, K, C, external_force_func, tspan)
 
     # ODE system
     function dynamics!(du, u, p, t)
-        F = external_force_func(t) 
+        F = ext_force(t) 
         du .= A * u .+ B * F
     end
 
@@ -147,8 +119,7 @@ function earthquake_wave(time::Float64, z::Float64, max_a::Float64, w_freq::Floa
     end
 end
 
-# Apply earthquake forcing to each floor
-function apply_earthquake_forcing(floors, time, max_a, w_freq, duration)
+function eqke_force(floors, time, max_a, w_freq, duration)
     forcing = zeros(Float64, floors)
     for i in 1:floors
         forcing[i] = earthquake_wave(time, i * FL_H, max_a, w_freq, duration)
@@ -170,19 +141,15 @@ end
 function sway_building!(time, floors, stiffness, mass, max_a, w_freq, duration)
     M, K, C = create_matrices(floors, stiffness, mass)
 
-    # Define earthquake force as a function of time
-    function external_force_func(t)
-        apply_earthquake_forcing(floors, t, max_a, w_freq, duration)
+    function ext_force(t)
+        eqke_force(floors, t, max_a, w_freq, duration)
     end
 
-    # Solve for displacements over the earthquake duration
     tspan = (0.0, duration)
-    sol = dynamic_response(M, K, C, external_force_func, tspan)
+    sol = dyn_rest(M, K, C, ext_force, tspan)
 
-    # Get displacements at the current time
     displacement = sol(time)[1:floors]
 
-    # Update building geometry based on displacements
     updated_p = Vector{Tuple{Float64, Float64, Float64}}()
     original_p = create_building(floors)
 
@@ -216,7 +183,7 @@ function create_gui()
         map(p -> Point3f0(p...), p)
     end, markersize = 10, color = :blue)
 
-    # aasked chatgpt to draw walls, not really like it, but looks kinda nice
+    # asked chatgpt to draw walls, not really what I wanted, but looks kinda nice
     lines!(ax, lift(obs_build_p) do p
         line_coords = []
         for i in 1:num_fls[]
@@ -245,7 +212,7 @@ function create_gui()
         (label = "Mass", range = 100000:10000:500000, startvalue = fl_mass[]),
         (label = "Max Amplitude", range = 0.1:0.1:2.0, startvalue = max_a[]),
         (label = "Wave Frequency", range = 0.5:0.1:5.0, startvalue = w_freq[]),
-        (label = "Earthquake Duration", range = 1.0:1.0:300.0, startvalue = eqke_dur[])
+        (label = "Earthquake Duration", range = 1.0:1.0:30.0, startvalue = eqke_dur[])
     )
     slider_observables = [s.value for s in sliders.sliders]
     on(slider_observables[1]) do f
