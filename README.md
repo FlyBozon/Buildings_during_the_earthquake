@@ -15,9 +15,9 @@ The simulation is built around solving the equation of motion for a building sub
 ### Equation of Motion
 
 The core physical model used in the simulation is governed by the equation of motion for a building under external forces, particularly those caused by an earthquake:
-`$
+$
 M \ddot{x} + C \dot{x} + K x = F(t)
-$`
+$
 Where:
 - **M** is the mass matrix of the building,
 - **C** is the damping matrix,
