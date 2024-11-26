@@ -42,7 +42,7 @@ The building’s displacement is computed by solving the above second-order diff
   - Higher stiffness reduces deformation.
   - Increases the natural frequency, leading to faster vibrations.
 - **Formula**:  
-  \( F = k \cdot \Delta x \)
+  $` F = k \cdot \Delta x `$
 
 ### 2. **Mass (m)**
 - **Definition**: The weight of the structure or material.
@@ -50,7 +50,7 @@ The building’s displacement is computed by solving the above second-order diff
   - Higher mass lowers the natural frequency, slowing vibrations.
   - Reduces sensitivity to high-frequency loads but increases inertia.
 - **Formula**:  
-  \( \omega_0 = \sqrt{\frac{k}{m}} \), where \( \omega_0 \) is the natural frequency.
+  $`\omega_0 = \sqrt{\frac{k}{m}}`$, where $` \omega_0 `$ is the natural frequency.
 
 ### 3. **Damping (c)**
 - **Definition**: The ability of the building to dissipate vibration energy.
@@ -58,7 +58,7 @@ The building’s displacement is computed by solving the above second-order diff
   - Higher damping reduces oscillation amplitudes.
   - Prevents resonance, lowering the risk of structural damage.
 - **Formula**:  
-  \( m \ddot{x} + c \dot{x} + k x = F(t) \)
+  $` m \ddot{x} + c \dot{x} + k x = F(t) `$
 
 ### 4. **Height of the Building (h)**
 - **Definition**: Number of floors or vertical size of the structure.
