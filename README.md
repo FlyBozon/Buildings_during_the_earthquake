@@ -1,6 +1,8 @@
 # Buildings_during_the_earthquake
 Visualization of buildings vibrations during the earthquake
 
+![](https://github.com/FlyBozon/Buildings_during_the_earthquake/blob/main/Changing_params.gif)
+
 ## Overview
 This Julia-based program simulates the dynamic response of a multi-story building under earthquake-induced forces. The program integrates a physics-based model with a real-time graphical user interface (GUI), allowing the user to interactively observe how the building's structure deforms under various earthquake conditions.
 
