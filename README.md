@@ -15,9 +15,9 @@ The simulation is built around solving the equation of motion for a building sub
 ### Equation of Motion
 
 The core physical model used in the simulation is governed by the equation of motion for a building under external forces, particularly those caused by an earthquake:
-$
+$`
 M \ddot{x} + C \dot{x} + K x = F(t)
-$
+`$
 Where:
 - **M** is the mass matrix of the building,
 - **C** is the damping matrix,
@@ -25,11 +25,11 @@ Where:
 - **F(t)** is the time-dependent force due to the earthquake.
 
 The damping matrix **C** is calculated using **Rayleigh damping**:
-`$
-C = \alpha M + \beta K
 $`
+C = \alpha M + \beta K
+`$
 Where:
-- `$\alpha$` and `$\beta$` are damping coefficients,
+- $`\alpha`$ and $`\beta`$ are damping coefficients,
 - **M** and **K** are the mass and stiffness matrices, respectively.
 
 The building’s displacement is computed by solving the above second-order differential equation over time.
